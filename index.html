@@ -205,7 +205,6 @@ const SUPABASE_KEY = "Psb_publishable_yxwug6HSxINxYZRJQukmGA_3NDYAy8B";
     posting = true; $("#p-submit").disabled = true; say(st,"Posting...");
     const { error } = await db.from("posts").insert({
       name: $("#p-name").value.trim().slice(0,40) || "Anonymous",
-      place: $("#p-where").value.trim().slice(0,40),
       body: text.slice(0,600)
     });
     posting = false; $("#p-submit").disabled = false;
