@@ -9,37 +9,53 @@
 <meta property="og:description" content="Every morning throughout the world hundreds of people eat this face.">
 <meta property="og:image" content="https://evereatthisman.org/logo.jpg">
 <style>
-/* The only CSS: keeps fields, images and the layout table inside a phone screen, and keeps visited links the same blue as unvisited ones. Everything else is the browser's default. */
+/* Keeps fields, images and the layout table inside a phone screen, keeps visited links blue, and adds a few gray boxes. Everything else is the browser's default. */
 textarea, input, img { max-width: 100%; }
 a:visited { color: #0000EE; color: LinkText; }
 table.pw-layout { table-layout: fixed; }
 table.pw-layout td { overflow-wrap: anywhere; }
+td.pw-side { padding: 16px 20px 16px 16px; }
+td.pw-main { padding: 16px 16px 16px 36px; }
+.masthead { text-align: center; }
+.logo { display: block; border: 1px solid #999; padding: 6px; background: #fff; }
+.logo img { display: block; margin: 0 auto; }
+.box { background: #eee; border: 1px solid #ccc; padding: 12px 16px; margin: 0 0 16px; }
+.box > :first-child { margin-top: 0; }
+.box > :last-child { margin-bottom: 0; }
+/* On phones the sidebar sits above the content instead of beside it. */
+@media (max-width: 600px) {
+  table.pw-layout, table.pw-layout tr, table.pw-layout td { display: block; width: auto; }
+  td.pw-side, td.pw-main { padding: 12px 16px; }
+}
 </style>
 </head>
 <body>
 
 <table class="pw-layout" width="100%" cellpadding="8" cellspacing="0">
 <tr>
-<td valign="top" width="170">
-  <a href="#board"><img src="logo.jpg" width="160" alt="Ever Eat This Man? logo: a smiling man in a wide-brimmed black hat"></a>
+<td class="pw-side" valign="top" width="240">
+<div class="masthead">
+  <a class="logo" href="#board"><img src="logo.jpg" width="200" alt="Ever Eat This Man? logo: a smiling man in a wide-brimmed black hat"></a>
   <h2><a href="#board">EVER EAT THIS MAN?</a></h2>
   <p><i>Every morning throughout the world hundreds of people eat this face</i></p>
-  <hr>
+</div>
+<div class="box">
   <a href="#board">Message Board</a><br>
   <a href="#history">History</a><br>
   <a href="#world">In the World</a><br>
   <a href="#contact">Contact</a><br>
   <a href="https://www.instagram.com/evereatthisman" target="_blank" rel="noopener">Instagram</a>
+</div>
 </td>
 
-<td valign="top">
+<td class="pw-main" valign="top">
 
 <!-- ================= BOARD ================= -->
 <div data-page="board">
   <h1>Have you eaten him?</h1>
   <p>Share your experience. Any  information helps. No names, no sign-up. Totally anonymous!</p>
 
-  <form id="post-form" autocomplete="off">
+  <form id="post-form" class="box" autocomplete="off">
     <label for="p-name">Name:</label><br>
     <input id="p-name" maxlength="40" placeholder="Anonymous"><br><br>
     <label for="p-body">Your message:</label><br>
@@ -63,6 +79,7 @@ table.pw-layout td { overflow-wrap: anywhere; }
   <p>Within weeks, similar reports arrived from people who had never met. The face appeared in toast, the foam of cappuccinos, the char of flatbreads and the ridges of waffles. Same cheeks. Same hat. Same grin. Almost everyone who reported him did the same thing next: they ate him!</p>
   <blockquote><i>“I didn’t want to waste it. He looked like he wanted to be eaten.”</i><br><small>Message board post, anonymous</small></blockquote>
 
+  <div class="box">
   <h2>Timeline of sightings</h2>
   <ol>
     <li><b>The first bowl.</b> A café cook photographs the face in a pot of porridge. The picture gets passed around the regulars and later posted online.</li>
@@ -70,11 +87,14 @@ table.pw-layout td { overflow-wrap: anywhere; }
     <li><b>Latte art.</b> Baristas report pouring him by accident. Several say they cannot pour anything else for the rest of the shift.</li>
     <li><b>This website.</b> Ever Eat This Man? opens to collect the sightings and ask the obvious question: why does he keep turning up at breakfast?</li>
   </ol>
+  </div>
 
+  <div class="box">
   <h2>Theories</h2>
   <p><b>Pareidolia.</b> Your brain finds faces in any pattern of light and dark, and breakfast is full of them. This explains a face. It does not explain why it is always the same one, with the same hat.</p>
   <p><b>The collective breakfast.</b> Some visitors think he is a shared idea, passed from bowl to bowl the way a tune gets stuck in many heads at once.</p>
   <p><b>He wants to be eaten.</b> The most popular theory on the board, and the least scientific.</p>
+  </div>
 </div>
 
 <!-- ================= IN THE WORLD ================= -->
@@ -90,7 +110,7 @@ table.pw-layout td { overflow-wrap: anywhere; }
   <h1>Contact</h1>
   <p>Got a sighting, want a photo taken down, or have a theory too long for the board? Fill in the form and we’ll get back to you!</p>
 
-  <form id="contact-form">
+  <form id="contact-form" class="box">
     <label for="c-name">Your name:</label><br>
     <input id="c-name" maxlength="80" required><br><br>
     <label for="c-email">E-mail:</label><br>
@@ -147,7 +167,7 @@ const SUPABASE_KEY = "sb_publishable_yxwug6HSxINxYZRJQukmGA_3NDYAy8B";
     const g = $("#gallery"); g.textContent = "";
     if (!Array.isArray(items) || !items.length){ g.appendChild(el("p","No sightings posted yet.")); return; }
     for (const it of items){
-      const p = el("p");
+      const p = el("div"); p.className = "box";
       if (it.photo){
         const img = document.createElement("img");
         img.src = "photos/" + encodeURIComponent(it.photo); img.alt = it.title || "Sighting"; img.width = 240; img.loading = "lazy";
@@ -180,8 +200,7 @@ const SUPABASE_KEY = "sb_publishable_yxwug6HSxINxYZRJQukmGA_3NDYAy8B";
     $("#post-total").textContent = data.length ? "(" + data.length + ")" : "";
     if (!data.length){ list.appendChild(el("p","No messages yet. Be the first to confess!")); return; }
     for (const p of data){
-      list.appendChild(el("hr"));
-      const para = el("p");
+      const para = el("div"); para.className = "box";
       para.appendChild(el("b", p.name || "Anonymous"));
       const meta = [p.place, fmtDate(p.created_at)].filter(Boolean).join(" · ");
       para.appendChild(document.createTextNode(" "));
